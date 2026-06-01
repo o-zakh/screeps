@@ -1,29 +1,40 @@
-var roleUpgrader = {
+var autoSpawner = {
 
-    /** @param {Creep} creep **/
-//     run: function(creep) {
+    /** @param {StructureSpawn} creep **/
+    run: function() {
+        var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == "harvester")
+        var upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == "upgrader")
+        var builders = _.filter(Game.creeps, (creep) => creep.memory.role == "builder")
 
-//         if(creep.memory.upgrading && creep.store[RESOURCE_ENERGY] == 0) {
-//             creep.memory.upgrading = false;
-//             creep.say('🔄 harvest');
-// 	    }
-// 	    if(!creep.memory.upgrading && creep.store.getFreeCapacity() == 0) {
-// 	        creep.memory.upgrading = true;
-// 	        creep.say('⚡ upgrade');
-// 	    }
+        const currentRoom = Game.spawns['Spawn1'].room
 
-// 	    if(creep.memory.upgrading) {
-//             if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
-//                 creep.moveTo(creep.room.controller, {visualizePathStyle: {stroke: '#ffffff'}});
-//             }
-//         }
-//         else {
-//             var sources = creep.room.find(FIND_SOURCES);
-//             if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
-//                 creep.moveTo(sources[0], {visualizePathStyle: {stroke: '#ffaa00'}});
-//             }
-//         }
-// 	}
-// };
+        if (harvesters.length < 1) {
+            var name = "Harvester" + Game.time
+            if (currentRoom.energyCapacityAvailable >= 400) {
+                Game.spawns["Spawn1"].spawnCreep([WORK, WORK, MOVE, MOVE, CARRY, CARRY], name, {memory: {role: "harvester"}, direction: BOTTOM})
+            } else {
+                Game.spawns["Spawn1"].spawnCreep([WORK, MOVE, CARRY], name, {memory: {role: "harvester"}, direction: BOTTOM})
+            }
+        }
 
-module.exports = roleUpgrader;
+        if (upgraders.length < 3) {
+            var name = "Upgrader" + Game.time
+            if (currentRoom.energyCapacityAvailable >= 400) {
+                Game.spawns["Spawn1"].spawnCreep([WORK, WORK, MOVE, MOVE, CARRY, CARRY], name, {memory: {role: "upgrader"}, direction: BOTTOM})
+            } else {
+                Game.spawns["Spawn1"].spawnCreep([WORK, MOVE, CARRY], name, {memory: {role: "upgrader"}, direction: BOTTOM})
+            }
+        }
+
+        if (builders.length < 2) {
+            var name = "Builder" + Game.time
+            if (currentRoom.energyCapacityAvailable >= 400) {
+                Game.spawns["Spawn1"].spawnCreep([WORK, WORK, MOVE, MOVE, CARRY, CARRY], name, {memory: {role: "builder"}, direction: BOTTOM})
+            } else {
+                Game.spawns["Spawn1"].spawnCreep([WORK, MOVE, CARRY], name, {memory: {role: "builder"}, direction: BOTTOM})
+            }
+        }
+    }
+};
+
+module.exports = autoSpawner;
