@@ -1,8 +1,8 @@
-var roleHarvester = require('role.harvester');
-var roleUpgrader = require('role.upgrader');
-var roleBuilder = require('role.builder');
-var autoSpawner = require('autoSpawner');
-var tower = require('tower');
+var roleHarvester = require('dist/role.harvester');
+var roleUpgrader = require('dist/role.upgrader');
+var roleBuilder = require('dist/role.builder');
+var autoSpawner = require('dist/autoSpawner');
+var tower = require('dist/tower');
 
 module.exports.loop = function () {
     console.log('Lorem Ipsum');
