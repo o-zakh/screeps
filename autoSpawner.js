@@ -6,6 +6,10 @@ var autoSpawner = {
         var upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == "upgrader")
         var builders = _.filter(Game.creeps, (creep) => creep.memory.role == "builder")
 
+//         console.log(`harvesters: ${harvesters.length},
+// upgraders: ${upgraders.length},
+// builders: ${builders.length}`)
+
         const currentRoom = Game.spawns['Spawn1'].room
         
         let bodyParts = [WORK, MOVE, CARRY]
@@ -24,9 +28,10 @@ var autoSpawner = {
         }
 
         // Апгрейдеров меньше, потому что они преимущественно будут только носить ресурсы от контейнера до контроллера
-        if (upgraders.length < 2) {
-            if (currentRoom.energyAvailable >= 600) {
-                bodyParts = [WORK, WORK, WORK, MOVE, CARRY, CARRY, CARRY]
+        if (upgraders.length < 4
+             && currentRoom.energyCapacityAvailable >= 700) {
+            if (currentRoom.energyCapacityAvailable >= 650) {
+                bodyParts = [WORK, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY]
             }
             var name = "Upgrader" + Game.time
             Game.spawns["Spawn1"].spawnCreep(bodyParts, name, {memory: {role: "upgrader"}})

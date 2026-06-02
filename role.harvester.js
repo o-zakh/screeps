@@ -1,4 +1,3 @@
-var roleBuilder = require('role.builder');
 var roleHarvester = {
 
     /** @param {Creep} creep **/
@@ -22,7 +21,7 @@ var roleHarvester = {
             }
         } else if (creep.memory.target) {
             var target = Game.getObjectById(creep.memory.target);
-            if (!target) {
+            if (!target || target.getFreeCapacity == 0) {
                 delete creep.memory.target;
             } else if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
@@ -40,7 +39,7 @@ var roleHarvester = {
             if (targets.length == 0) {
                 targets = creep.room.find(FIND_STRUCTURES, {
                     filter: (structure) => {
-                        return (structure.structureType == STRUCTURE_CONTAINER) &&
+                        return (structure.structureType == STRUCTURE_CONTAINER || structure.structureType == STRUCTURE_TOWER) &&
                             structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
                     }
                 });

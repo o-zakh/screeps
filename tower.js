@@ -1,0 +1,16 @@
+var tower = {
+
+    /** @param {StructureTower} tower **/
+    defend: function(tower) {
+        const hostiles = tower.room.find(FIND_HOSTILE_CREEPS)
+        closestHostile = tower.pos.findClosestByRange(hostiles)
+        if (!closestHostile) {
+            // console.log("Врагов не обнаружено")
+        } else {
+            console.log("Стреляю по " + closestHostile)
+        }
+        tower.attack(closestHostile)
+    }
+}
+
+module.exports = tower;
