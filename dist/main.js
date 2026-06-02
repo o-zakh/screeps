@@ -1,10 +1,14 @@
-var roleHarvester = require('dist/role.harvester');
-var roleUpgrader = require('dist/role.upgrader');
-var roleBuilder = require('dist/role.builder');
-var autoSpawner = require('dist/autoSpawner');
-var tower = require('dist/tower');
+var roleHarvester = require('role.harvester');
+var roleUpgrader = require('role.upgrader');
+var roleBuilder = require('role.builder');
+var autoSpawner = require('autoSpawner');
+var tower = require('tower');
+
+require('external/foo');
 
 module.exports.loop = function () {
+
+
     for(var name in Memory.creeps) {
         if(!Game.creeps[name]) {
             delete Memory.creeps[name];
