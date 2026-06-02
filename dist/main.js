@@ -5,8 +5,6 @@ var autoSpawner = require('dist/autoSpawner');
 var tower = require('dist/tower');
 
 module.exports.loop = function () {
-    console.log('Lorem Ipsum');
-
     for(var name in Memory.creeps) {
         if(!Game.creeps[name]) {
             delete Memory.creeps[name];
