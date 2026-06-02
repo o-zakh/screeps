@@ -4,7 +4,7 @@ var roleBuilder = require('role.builder');
 var autoSpawner = require('autoSpawner');
 var tower = require('tower');
 
-require('external/foo');
+console.log("Давай работай")
 
 module.exports.loop = function () {
 
