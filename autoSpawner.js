@@ -7,32 +7,35 @@ var autoSpawner = {
         var builders = _.filter(Game.creeps, (creep) => creep.memory.role == "builder")
 
         const currentRoom = Game.spawns['Spawn1'].room
+        
+        let bodyParts = [WORK, MOVE, CARRY]
+        
+        if (currentRoom.energyCapacityAvailable >= 400) {
+            bodyParts = [WORK, WORK, MOVE, MOVE, CARRY, CARRY]
+        }
 
-        if (harvesters.length < 1) {
+        // Носят ресурсы до: 1. Спавнера и экстеншенов 2. Контейнеров
+        if (harvesters.length < 5) {
+            if (currentRoom.energyAvailable >= 600) {
+                bodyParts = [WORK, WORK, WORK, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY]
+            }
             var name = "Harvester" + Game.time
-            if (currentRoom.energyCapacityAvailable >= 400) {
-                Game.spawns["Spawn1"].spawnCreep([WORK, WORK, MOVE, MOVE, CARRY, CARRY], name, {memory: {role: "harvester"}, direction: BOTTOM})
-            } else {
-                Game.spawns["Spawn1"].spawnCreep([WORK, MOVE, CARRY], name, {memory: {role: "harvester"}, direction: BOTTOM})
-            }
+            Game.spawns["Spawn1"].spawnCreep(bodyParts, name, {memory: {role: "harvester"}})
         }
 
-        if (upgraders.length < 3) {
+        // Апгрейдеров меньше, потому что они преимущественно будут только носить ресурсы от контейнера до контроллера
+        if (upgraders.length < 2) {
+            if (currentRoom.energyAvailable >= 600) {
+                bodyParts = [WORK, WORK, WORK, MOVE, CARRY, CARRY, CARRY]
+            }
             var name = "Upgrader" + Game.time
-            if (currentRoom.energyCapacityAvailable >= 400) {
-                Game.spawns["Spawn1"].spawnCreep([WORK, WORK, MOVE, MOVE, CARRY, CARRY], name, {memory: {role: "upgrader"}, direction: BOTTOM})
-            } else {
-                Game.spawns["Spawn1"].spawnCreep([WORK, MOVE, CARRY], name, {memory: {role: "upgrader"}, direction: BOTTOM})
-            }
+            Game.spawns["Spawn1"].spawnCreep(bodyParts, name, {memory: {role: "upgrader"}})
         }
 
-        if (builders.length < 2) {
+        // Столько, сколько ячеек во втором сурсе
+        if (builders.length < 4) {
             var name = "Builder" + Game.time
-            if (currentRoom.energyCapacityAvailable >= 400) {
-                Game.spawns["Spawn1"].spawnCreep([WORK, WORK, MOVE, MOVE, CARRY, CARRY], name, {memory: {role: "builder"}, direction: BOTTOM})
-            } else {
-                Game.spawns["Spawn1"].spawnCreep([WORK, MOVE, CARRY], name, {memory: {role: "builder"}, direction: BOTTOM})
-            }
+            Game.spawns["Spawn1"].spawnCreep(bodyParts, name, {memory: {role: "builder"}})
         }
     }
 };

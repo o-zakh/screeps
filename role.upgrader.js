@@ -1,3 +1,5 @@
+const { filter, sortedIndexBy } = require("lodash");
+
 var roleUpgrader = {
 
     /** @param {Creep} creep **/
@@ -18,9 +20,30 @@ var roleUpgrader = {
             }
         }
         else {
-            var sources = creep.room.find(FIND_SOURCES);
-            if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(sources[0], {visualizePathStyle: {stroke: '#ffaa00'}});
+            
+            var sources = creep.room.find(FIND_STRUCTURES, {
+                    filter: (structure) => {
+                        return (structure.structureType == STRUCTURE_CONTAINER) &&
+                            structure.store.getUsedCapacity(RESOURCE_ENERGY) > 0;
+                    }
+            });
+
+            sources = sources.concat(creep.room.find(FIND_SOURCES_ACTIVE))
+            
+            var closestSource = creep.pos.findClosestByPath(sources, {algorithm: "dijkstra"});
+            if (!closestSource) {
+                return;
+            }
+
+            var nearSource;
+            if (closestSource.structureType === STRUCTURE_CONTAINER) {
+                nearSource = creep.withdraw(closestSource, RESOURCE_ENERGY);
+            } else {
+                nearSource = creep.harvest(closestSource);
+            }
+
+            if (nearSource == ERR_NOT_IN_RANGE) {
+                creep.moveTo(closestSource, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
         }
 	}
