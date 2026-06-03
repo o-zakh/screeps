@@ -49,11 +49,7 @@ var config = {
         ],
     },
     sourceId: {
-<<<<<<< HEAD
         builders: "5a30829b034d9d50c0fe412c",
-=======
-        builders: "c27787cafbad128b766a66e4",
->>>>>>> 3baf02d8989490dad38d80f38a22a15ca230d59a
     },
 };
 
