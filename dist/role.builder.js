@@ -1,9 +1,11 @@
+var config = require('config');
+
 var roleBuilder = {
 
     /** @param {Creep} creep **/
     run: function(creep) {
 
-		const builderEnergySourceId = "5bbcac359099fc012e6351a1"
+		const builderEnergySourceId = config.sourceId.builders
 
 		// roleBuilder.repairWalls(creep)
 
@@ -31,7 +33,7 @@ var roleBuilder = {
 				}
 			} else {
 				var repairTargets = _.filter(creep.room.find(FIND_STRUCTURES), (structure) => {
-					return (structure.hitsMax - structure.hits > 500 && structure.structureType != STRUCTURE_WALL)
+					return (structure.hits <= 300000 && structure.hitsMax - structure.hits > 500 && structure.structureType != STRUCTURE_WALL)
 				})
 				if (repairTargets.length != 0) {
 					repairTarget = creep.pos.findClosestByPath(repairTargets, {algorithm: 'dijkstra'});
