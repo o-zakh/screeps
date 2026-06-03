@@ -2,8 +2,10 @@ var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var autoSpawner = require('autoSpawner');
-var tower = require('tower');
-var сonfig = require('config');
+var structureTower = require('structure.tower');
+var roleDistHarvester = require('role.distHarvester')
+var roleDistCourier = require('role.distCourier')
+var config = require('config');
 
 module.exports.loop = function () {
     
@@ -13,17 +15,25 @@ module.exports.loop = function () {
             console.log('Clearing non-existing creep memory:', name);
         }
     }
+    
+    creepsObj = {
+        harvesters: _.filter(Game.creeps, (creep) => creep.memory.role == "harvester"),
+        upgraders: _.filter(Game.creeps, (creep) => creep.memory.role == "upgrader"),
+        builders: _.filter(Game.creeps, (creep) => creep.memory.role == "builder"),
+        distHarvesters: _.filter(Game.creeps, (creep) => creep.memory.role == "distHarvester"),
+        distCouriers: _.filter(Game.creeps, (creep) => creep.memory.role == "distCourier"),
+    }
 
     const mainRoom = Game.spawns['Spawn1'].room
-    
     
     var structureTypes = {
         extensions: STRUCTURE_EXTENSION,
         containers: STRUCTURE_CONTAINER,
+        towers: STRUCTURE_TOWER,
     };
 
-    for (var type in сonfig.constructionPositions) {
-        var positions = сonfig.constructionPositions[type];
+    for (var type in config.constructionPositions) {
+        var positions = config.constructionPositions[type];
         if (!Array.isArray(positions)) {
             continue;
         }
@@ -37,9 +47,16 @@ module.exports.loop = function () {
         });
     }
 
-    autoSpawner.run();
-    // tower1 = Game.getObjectById("6a1edde4929c4fc9984d2cec")
-    // tower.defend(tower1)
+    autoSpawner.run(creepsObj);
+
+    var towers = _.filter(Game.structures, (structure) => structure.structureType == STRUCTURE_TOWER)
+
+    if (towers.length > 0) {
+        for(var tower in towers) {
+            structureTower.defend(tower)
+        }
+    }
+
 
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
@@ -54,6 +71,12 @@ module.exports.loop = function () {
         }
         if(creep.memory.role == 'builder') {
             roleBuilder.run(creep);
+        }
+        if(creep.memory.role == 'distHarvester') {
+            roleDistHarvester.run(creep);
+        }
+        if(creep.memory.role == 'distCourier') {
+            roleDistCourier.run(creep, creepsObj.distHarvesters[0]);
         }
     }
 }

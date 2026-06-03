@@ -7,8 +7,6 @@ var roleBuilder = {
 
 		const builderEnergySourceId = config.sourceId.builders
 
-		// roleBuilder.repairWalls(creep)
-
 	    if(creep.memory.building && creep.store[RESOURCE_ENERGY] == 0) {
             creep.memory.building = false;
             creep.say('🔄 harvest');
@@ -57,16 +55,12 @@ var roleBuilder = {
 			const repairTargets = _.filter(creep.room.find(FIND_STRUCTURES), (structure) => {
 				return (structure.structureType == STRUCTURE_WALL)
 			})
-			console.log("All walls that need repair: " + repairTargets)
 			const repairTargetsSorted = _.sortBy(repairTargets, (structure) => structure.hits)
-			console.log("Sorted repair targets: " + repairTargetsSorted)
 			const closestRepairTarget = creep.pos.findClosestByPath(repairTargets, {
 				filter: function(structure) {
 					return structure.hits == repairTargetsSorted[0].hits
 				}
 			})
-			console.log("Closest wall that needs repair: " + closestRepairTarget)
-			console.log("Its ID: " + closestRepairTarget.id)
 			creep.memory.wallRepairTarget = {
 				id: null,
 				repairedHits: 0

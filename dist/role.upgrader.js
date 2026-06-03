@@ -1,5 +1,3 @@
-const { filter, sortedIndexBy } = require("lodash");
-
 var roleUpgrader = {
 
     /** @param {Creep} creep **/

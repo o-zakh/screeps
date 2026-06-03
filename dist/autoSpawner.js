@@ -2,45 +2,58 @@ var config = require('config');
 
 var autoSpawner = {
 
-    /** @param {StructureSpawn} creep **/
-    run: function() {
+    /** @param {Object} creepsObj **/
+    run: function(creepsObj) {
         
-
-        // Логика подсчета крипов разных ролей:
-
-        var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == "harvester")
-        var upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == "upgrader")
-        var builders = _.filter(Game.creeps, (creep) => creep.memory.role == "builder")
-
-        const creeps = [harvesters, upgraders, builders]
-
-        console.log(`harvesters: ${harvesters.length},
-upgraders: ${upgraders.length},
-builders: ${builders.length}`)
+//         console.log(`harvesters: ${creepsObj.harvesters.length},
+// upgraders: ${creepsObj.upgraders.length},
+// builders: ${creepsObj.builders.length},
+// distHarvesters: ${creepsObj.distHarvesters.length},
+// distCouriers: ${creepsObj.distCouriers.length}`)
 
         const currentRoom = Game.spawns['Spawn1'].room;
         const rclLevel = currentRoom.controller.level;
         const rclConfig = config.rcl[rclLevel] || config.rcl.at(-1)
 
         // Носят ресурсы до: 1. Спавнера и экстеншенов 2. Контейнеров
-        if (harvesters.length < rclConfig.creepNumber.harvesters) {
-            var name = rclConfig.name.harvesters
-            const bodyParts = rclConfig.bodyParts.harvesters
-            Game.spawns["Spawn1"].spawnCreep(bodyParts, name, {memory: {role: "harvester"}})
+        if (creepsObj.harvesters.length < rclConfig.creepNumber.harvesters) {
+            var name = rclConfig.name.harvesters + Game.time
+            var bodyParts = rclConfig.bodyParts.harvesters
+            if (Game.spawns["Spawn1"].spawnCreep(bodyParts, name, {memory: {role: "harvester"}}) == ERR_NOT_ENOUGH_ENERGY) {
+                bodyParts = [WORK, MOVE, CARRY]
+                Game.spawns["Spawn1"].spawnCreep(bodyParts, name, {memory: {role: "harvester"}})
+            }
         }
 
         // Апгрейдеров меньше, потому что они преимущественно будут только носить ресурсы от контейнера до контроллера
-        else if (upgraders.length < rclConfig.creepNumber.upgraders) {
-            var name = rclConfig.name.upgraders
-            const bodyParts = rclConfig.bodyParts.upgraders
-            Game.spawns["Spawn1"].spawnCreep(bodyParts, name, {memory: {role: "upgrader"}})
+        else if (creepsObj.upgraders.length < rclConfig.creepNumber.upgraders) {
+            var name = rclConfig.name.upgraders + Game.time
+            var bodyParts = rclConfig.bodyParts.upgraders
+            if (Game.spawns["Spawn1"].spawnCreep(bodyParts, name, {memory: {role: "upgrader"}}) == ERR_NOT_ENOUGH_ENERGY) {
+                bodyParts = [WORK, MOVE, CARRY]
+                Game.spawns["Spawn1"].spawnCreep(bodyParts, name, {memory: {role: "upgrader"}})
+            }
         }
 
         // Столько, сколько ячеек во втором сурсе
-        else if (builders.length < rclConfig.creepNumber.builders) {
-            var name = rclConfig.name.builders
-            const bodyParts = rclConfig.bodyParts.builders
-            Game.spawns["Spawn1"].spawnCreep(bodyParts, name, {memory: {role: "builder"}})
+        else if (creepsObj.builders.length < rclConfig.creepNumber.builders) {
+            var name = rclConfig.name.builders + Game.time
+            var bodyParts = rclConfig.bodyParts.builders
+            if (Game.spawns["Spawn1"].spawnCreep(bodyParts, name, {memory: {role: "builder"}}) == ERR_NOT_ENOUGH_ENERGY) {
+                bodyParts = [WORK, MOVE, CARRY]
+                Game.spawns["Spawn1"].spawnCreep(bodyParts, name, {memory: {role: "builder"}})
+            }
+        }
+        else if (creepsObj.distHarvesters.length < rclConfig.creepNumber.distHarvesters) {
+            var name = rclConfig.name.distHarvesters + Game.time
+            var bodyParts = rclConfig.bodyParts.distHarvesters
+            Game.spawns["Spawn1"].spawnCreep(bodyParts, name, {memory: {role: "distHarvester"}})
+        }
+
+        else if (creepsObj.distCouriers.length < rclConfig.creepNumber.distCouriers) {
+            var name = rclConfig.name.distCouriers + Game.time
+            var bodyParts = rclConfig.bodyParts.distCouriers
+            Game.spawns["Spawn1"].spawnCreep(bodyParts, name, {memory: {role: "distCourier"}})
         }
     }
 };
