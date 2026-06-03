@@ -3,7 +3,7 @@ var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var autoSpawner = require('autoSpawner');
 var tower = require('tower');
-var сonfig = require('config');
+var config = require('config');
 
 module.exports.loop = function () {
     
@@ -22,8 +22,8 @@ module.exports.loop = function () {
         containers: STRUCTURE_CONTAINER,
     };
 
-    for (var type in сonfig.constructionPositions) {
-        var positions = сonfig.constructionPositions[type];
+    for (var type in config.constructionPositions) {
+        var positions = config.constructionPositions[type];
         if (!Array.isArray(positions)) {
             continue;
         }
