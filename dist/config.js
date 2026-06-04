@@ -30,7 +30,7 @@ var config = {
                 upgraders: 4,
                 builders: 4,
                 distHarvesters: 1,
-                distCouriers: 1,
+                distCouriers: 3,
             },
             bodyParts: {
                 harvesters: [WORK, WORK, MOVE, MOVE, CARRY, CARRY],
