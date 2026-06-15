@@ -9,12 +9,14 @@ var roleDistHarvester = {
             creep.moveTo(creep.pos.findClosestByRange(exitDir), {visualizePathStyle: {stroke: '#ffffff'}})
         } else {
             const targetSource = Game.getObjectById(config.sourceId.distHarvester)
-            if(creep.harvest(targetSource) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(targetSource, {visualizePathStyle: {stroke: '#ffaa00'}});
+            if (creep.store.getFreeCapacity() > 0) {
+                if(creep.harvest(targetSource) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(targetSource, {visualizePathStyle: {stroke: '#ffaa00'}});
+                }
             }
             var myAdjCreeps = creep.room.find(FIND_MY_CREEPS, {
                 filter: (myCreep) => {
-                    return (creep.pos.inRangeTo(myCreep, 1) && myCreep.id !== creep.id)
+                    return (creep.pos.inRangeTo(myCreep, 1) && myCreep.memory.role == "distCourier")
                 }
             })
             if(creep.store.getUsedCapacity() > 0 && myAdjCreeps.length > 0) {

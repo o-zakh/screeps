@@ -29,10 +29,11 @@ var autoSpawner = {
         else if (creepsObj.upgraders.length < rclConfig.creepNumber.upgraders) {
             var name = rclConfig.name.upgraders + Game.time
             var bodyParts = rclConfig.bodyParts.upgraders
-            if (Game.spawns["Spawn1"].spawnCreep(bodyParts, name, {memory: {role: "upgrader"}}) == ERR_NOT_ENOUGH_ENERGY) {
-                bodyParts = [WORK, MOVE, CARRY]
-                Game.spawns["Spawn1"].spawnCreep(bodyParts, name, {memory: {role: "upgrader"}})
-            }
+            Game.spawns["Spawn1"].spawnCreep(bodyParts, name, {memory: {role: "upgrader"}})
+            // if (Game.spawns["Spawn1"].spawnCreep(bodyParts, name, {memory: {role: "upgrader"}}) == ERR_NOT_ENOUGH_ENERGY) {
+            //     bodyParts = [WORK, MOVE, CARRY]
+            //     Game.spawns["Spawn1"].spawnCreep(bodyParts, name, {memory: {role: "upgrader"}})
+            // }
         }
 
         // Столько, сколько ячеек во втором сурсе

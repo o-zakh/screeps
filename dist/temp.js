@@ -7,38 +7,20 @@ var roleDistCourier = {
     run: function(creep, distHarvesters) {
         
         const mainRoom = Game.spawns['Spawn1'].room;
-        const creepName = creep.name
         
-        var tombstones = creep.room.find(FIND_TOMBSTONES, {
-            filter: (tomb) => {
-                tomb.store.getUsedCapacity > 0
-            }
-        })
+        var tombstones = creep.room.find(FIND_TOMBSTONES)
         droppedEnergy = tombstones.concat(creep.room.find(FIND_DROPPED_RESOURCES))
-        // console.log(droppedEnergy)
+        
         
         if (creep.store.getFreeCapacity() > 0) {
-            // if (creepName in Memory.droppedEnergy) {
-            //     const drop = Game.getObjectById(Memory.droppedEnergy.creepName)
-            //     if (creep.pickup(drop) == ERR_NOT_IN_RANGE) {
-            //         creep.moveTo(drop, {visualizePathStyle: {stroke: '#ffffff'}});
-            //     }
-            // }
-            // else 
             if (droppedEnergy.length > 0) {
-                // Memory.droppedEnergy.myName = drop.id
                 const drop = creep.pos.findClosestByPath(droppedEnergy)
                 creep.say("🪎")
-                // console.log(drop.creep)
-                if (creep.withdraw(drop, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                        creep.moveTo(drop, {visualizePathStyle: {stroke: '#ffffff'}});
-                } else {
-                    if (creep.pickup(drop) == ERR_NOT_IN_RANGE) {
-                        creep.moveTo(drop, {visualizePathStyle: {stroke: '#ffffff'}});
-                    }
+                if (creep.withdraw(drop) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
                 }
             }
-            else if (distHarvesters[0] && distHarvesters[0].room != mainRoom) {
+            else if (distHarvesters) {
                 creep.moveTo(distHarvesters[0].pos, {visualizePathStyle: {stroke: '#ffffff'}});
             }
         } else {

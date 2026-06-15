@@ -16,6 +16,12 @@ module.exports.loop = function () {
         }
     }
     
+    // console.log(_.filter(Game.structures, (structure) => structure.structureType == STRUCTURE_EXTENSION))
+    
+    console.log(`Current extension spots: ${_.filter(Game.structures, (structure) => structure.structureType == STRUCTURE_EXTENSION).length}
+Available extension spots: ${config.constructionPositions.extensions.length}`)
+    
+    
     creepsObj = {
         harvesters: _.filter(Game.creeps, (creep) => creep.memory.role == "harvester"),
         upgraders: _.filter(Game.creeps, (creep) => creep.memory.role == "upgrader"),
@@ -53,10 +59,9 @@ module.exports.loop = function () {
 
     if (towers.length > 0) {
         for(var tower in towers) {
-            structureTower.defend(tower)
-        }
-    }
-
+            structureTower.defend(towers[tower])
+         }
+     }
 
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
@@ -76,7 +81,7 @@ module.exports.loop = function () {
             roleDistHarvester.run(creep);
         }
         if(creep.memory.role == 'distCourier') {
-            roleDistCourier.run(creep, creepsObj.distHarvesters[0]);
+            roleDistCourier.run(creep, creepsObj.distHarvesters);
         }
     }
 }

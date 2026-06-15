@@ -17,30 +17,44 @@ var roleBuilder = {
 	    }
 
 	    if(creep.memory.building) {
-	        var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
-			if (targets.length != 0) {
-				if (targets.some(target => target.structureType == "extension")) {
-					targets = _.filter(targets, (construction) => construction.structureType == STRUCTURE_EXTENSION)
-				}
-				targets = creep.pos.findClosestByPath(targets, {algorithm: 'dijkstra'});
-
-				if(targets) {
-					if(creep.build(targets) == ERR_NOT_IN_RANGE) {
-						creep.moveTo(targets, {visualizePathStyle: {stroke: '#ffffff'}});
-					}
-				}
-			} else {
-				var repairTargets = _.filter(creep.room.find(FIND_STRUCTURES), (structure) => {
+	        var repairTargets = _.filter(creep.room.find(FIND_STRUCTURES), (structure) => {
 					return (structure.hits <= 300000 && structure.hitsMax - structure.hits > 500 && structure.structureType != STRUCTURE_WALL)
 				})
-				if (repairTargets.length != 0) {
-					repairTarget = creep.pos.findClosestByPath(repairTargets, {algorithm: 'dijkstra'});
-					if(creep.repair(repairTarget) == ERR_NOT_IN_RANGE) {
-						creep.moveTo(repairTarget, {visualizePathStyle: {stroke: '#ffffff'}});
-					}
-				} else {
-					roleBuilder.repairWalls(creep)
+			var emergencyRepair = _.filter(creep.room.find(FIND_STRUCTURES), (structure) => {
+					return (structure.hitsMax - structure.hits > 500 && structure.structureType != STRUCTURE_WALL && (structure.hits < structure.hitsMax * 0.1 || structure.hits < 1000))
+				})
+// 			console.log(`repairTargets = ${repairTargets}`)
+// 			console.log(`emergency = ${emergencyRepair}`)
+			if (emergencyRepair.length != 0) {
+				emergencyRepair = creep.pos.findClosestByPath(emergencyRepair, {algorithm: 'dijkstra'});
+				if(creep.repair(emergencyRepair) == ERR_NOT_IN_RANGE) {
+					creep.moveTo(emergencyRepair, {visualizePathStyle: {stroke: '#ffffff'}});
 				}
+			} else {
+    	        var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
+    			if (targets.length != 0) {
+    				if (targets.some(target => target.structureType == "extension" || target.structureType == STRUCTURE_CONTAINER)) {
+    					targets = _.filter(targets, (construction) => construction.structureType == STRUCTURE_EXTENSION || construction.structureType == STRUCTURE_CONTAINER)
+    				}
+    				// console.log("targets: " + targets)
+    				targets = creep.pos.findClosestByPath(targets, {algorithm: 'dijkstra'});
+                    // console.log("target: " + targets)
+    				if(targets) {
+    					if(creep.build(targets) == ERR_NOT_IN_RANGE) {
+    						creep.moveTo(targets, {visualizePathStyle: {stroke: '#ffffff'}});
+    					}
+    				}
+    			} else {
+    
+    				if (repairTargets.length != 0) {
+    					repairTarget = creep.pos.findClosestByPath(repairTargets, {algorithm: 'dijkstra'});
+    					if(creep.repair(repairTarget) == ERR_NOT_IN_RANGE) {
+    						creep.moveTo(repairTarget, {visualizePathStyle: {stroke: '#ffffff'}});
+    					}
+    				} else {
+    					roleBuilder.repairWalls(creep)
+    				}
+    			}
 			}
 	    }
 	    else {
@@ -68,15 +82,17 @@ var roleBuilder = {
 			creep.memory.wallRepairTarget.id = closestRepairTarget.id
 			creep.memory.wallRepairTarget.repairedHits = 0
 		}
-		const wallRepairTarget = Game.getObjectById(creep.memory.wallRepairTarget.id)
-		if(creep.repair(wallRepairTarget) == ERR_NOT_IN_RANGE) {
-			creep.moveTo(wallRepairTarget, {visualizePathStyle: {stroke: '#ffffff'}});
-		} else {
-			creep.memory.wallRepairTarget.repairedHits += 200
-		}
-		if (creep.memory.wallRepairTarget.repairedHits >= 10000) {
-			delete creep.memory.wallRepairTarget
-			return 
+		if (creep.memory.wallRepairTarget.id) {
+            const wallRepairTarget = Game.getObjectById(creep.memory.wallRepairTarget.id)
+    		if(creep.repair(wallRepairTarget) == ERR_NOT_IN_RANGE) {
+    			creep.moveTo(wallRepairTarget, {visualizePathStyle: {stroke: '#ffffff'}});
+    		} else {
+    			creep.memory.wallRepairTarget.repairedHits += 200
+    		}
+    		if (creep.memory.wallRepairTarget.repairedHits >= 10000) {
+    			delete creep.memory.wallRepairTarget
+    			return 
+    		}		    
 		}
 	}
 };
